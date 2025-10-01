@@ -7,7 +7,7 @@ import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract NFTMarketplace is ERC721URIStorage, Ownable {
     uint256 private _tokenIdCounter;
-    uint256 public listingFee = 0.025 ether; 
+    uint256 public listingFee = 0.025 ether;
     uint256 private _itemsSold;
 
     struct MarketItem {
@@ -20,13 +20,7 @@ contract NFTMarketplace is ERC721URIStorage, Ownable {
 
     mapping(uint256 => MarketItem) private idToMarketItem;
 
-    event MarketItemCreated(
-        uint256 indexed tokenId,
-        address seller,
-        address owner,
-        uint256 price,
-        bool sold
-    );
+    event MarketItemCreated(uint256 indexed tokenId, address seller, address owner, uint256 price, bool sold);
 
     constructor() ERC721("NFTMarketplace", "NFTM") Ownable(msg.sender) {}
 
@@ -47,13 +41,7 @@ contract NFTMarketplace is ERC721URIStorage, Ownable {
     function createMarketItem(uint256 tokenId, uint256 price) private {
         require(price > 0, "Price must be greater than 0");
 
-        idToMarketItem[tokenId] = MarketItem(
-            tokenId,
-            payable(msg.sender),
-            payable(address(0)),
-            price,
-            false
-        );
+        idToMarketItem[tokenId] = MarketItem(tokenId, payable(msg.sender), payable(address(0)), price, false);
 
         _transfer(msg.sender, address(this), tokenId);
 
@@ -70,8 +58,8 @@ contract NFTMarketplace is ERC721URIStorage, Ownable {
         _itemsSold++;
 
         _transfer(address(this), msg.sender, tokenId);
-        payable(owner()).transfer(listingFee); 
-        item.seller.transfer(msg.value); 
+        payable(owner()).transfer(listingFee);
+        item.seller.transfer(msg.value);
     }
 
     function fetchMarketItems() public view returns (MarketItem[] memory) {
